@@ -243,7 +243,7 @@ class HFLM(TemplateLM):
         # select (or create) a pad token to use
         self.tokenizer = configure_pad_token(self.tokenizer, model_config=self.config)
         self.chat_template_args = (
-            chat_template_args or {} | dict(enable_thinking=enable_thinking)
+            (chat_template_args or {}) | dict(enable_thinking=enable_thinking)
             if enable_thinking is not None
             else {}
         )
@@ -529,8 +529,8 @@ class HFLM(TemplateLM):
             else:
                 if not trust_remote_code:
                     eval_logger.warning(
-                        "HF model type is neither marked as CausalLM or Seq2SeqLM. \
-                    This is expected if your model requires `trust_remote_code=True` but may be an error otherwise."
+                        "HF model type is neither marked as CausalLM or Seq2SeqLM. "
+                        "This is expected if your model requires `trust_remote_code=True` but may be an error otherwise."
                         "Setting backend to causal"
                     )
                 # if model type is neither in HF transformers causal or seq2seq model registries
@@ -728,7 +728,7 @@ class HFLM(TemplateLM):
         tokenizer: str
         | transformers.PreTrainedTokenizer
         | transformers.PreTrainedTokenizerFast
-        | None,
+        | None = None,
         revision: str | None = "main",
         trust_remote_code: bool | None = False,
         use_fast_tokenizer: bool | None = True,
