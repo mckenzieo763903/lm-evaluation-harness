@@ -529,8 +529,8 @@ class HFLM(TemplateLM):
             else:
                 if not trust_remote_code:
                     eval_logger.warning(
-                        "HF model type is neither marked as CausalLM or Seq2SeqLM. \
-                    This is expected if your model requires `trust_remote_code=True` but may be an error otherwise."
+                        "HF model type is neither marked as CausalLM or Seq2SeqLM. "
+                        "This is expected if your model requires `trust_remote_code=True` but may be an error otherwise."
                         "Setting backend to causal"
                     )
                 # if model type is neither in HF transformers causal or seq2seq model registries
@@ -686,13 +686,14 @@ class HFLM(TemplateLM):
                 vocab_size = self._model.config.text_config.vocab_size
             else:
                 vocab_size = self._model.config.vocab_size
-            
+
             if vocab_size != len(self.tokenizer):
                 # resize model for LoRAs with added tokens
                 eval_logger.info(
                     f"Model config indicates vocab_size='{vocab_size}', but found tokenizer with vocab size '{len(self.tokenizer)}'. Resizing model embedding layer..."
                 )
                 self._model.resize_token_embeddings(len(self.tokenizer))
+
             self._model = PeftModel.from_pretrained(
                 self._model, peft, revision=revision
             )
