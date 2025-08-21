@@ -529,10 +529,10 @@ class HFLM(TemplateLM):
             else:
                 if not trust_remote_code:
                     eval_logger.warning(
-                        "HF model type is neither marked as CausalLM or Seq2SeqLM. \
-                    This is expected if your model requires `trust_remote_code=True` but may be an error otherwise."
-                        "Setting backend to causal"
+                        "HF model type is neither marked as CausalLM or Seq2SeqLM. "
+                        "This is expected if your model requires `trust_remote_code=True` but may be an error otherwise."
                     )
+                    eval_logger.warning("Setting backend to causal")
                 # if model type is neither in HF transformers causal or seq2seq model registries
                 # then we default to assuming AutoModelForCausalLM
                 self.backend = "causal"
@@ -686,7 +686,7 @@ class HFLM(TemplateLM):
                 vocab_size = self._model.config.text_config.vocab_size
             else:
                 vocab_size = self._model.config.vocab_size
-            
+
             if vocab_size != len(self.tokenizer):
                 # resize model for LoRAs with added tokens
                 eval_logger.info(
@@ -1503,6 +1503,11 @@ class HFLM(TemplateLM):
         self, chat_history: list[dict[str, str]], add_generation_prompt: bool = True
     ) -> str:
         """Method to apply a chat template to a list of chat history between user and model."""
+        return self.tokenizer.apply_chat_template(
+            chat_history,
+            tokenize=False,
+            add_generation_prompt=add_generation_prompt,
+        )
         try:
             chat_templated = self.tokenizer.apply_chat_template(
                 chat_history,

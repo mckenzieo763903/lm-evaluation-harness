@@ -69,7 +69,7 @@ def retrieval_score(prediction, ground_truth):
         prediction_num = numbers[0]
     else:
         return 0.0
-    
+
     return 1.0 if prediction_num == str(ground_truth) else 0.0
 
 
@@ -83,7 +83,7 @@ def count_score(prediction, ground_truth):
         pred_count = int(numbers[0])
         true_count = int(ground_truth)
         return 1.0 if pred_count == true_count else 0.0
-    except:
+    except Exception:
         return 0.0
 
 

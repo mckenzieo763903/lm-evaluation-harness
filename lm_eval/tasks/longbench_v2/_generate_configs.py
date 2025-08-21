@@ -28,7 +28,7 @@ TASKS = {
         "metric": "qa_f1",
         "max_gen_toks": 50,
     },
-    
+
     # Multi-Document QA
     "hotpotqa": {
         "dataset_name": "hotpotqa",
@@ -51,7 +51,7 @@ TASKS = {
         "metric": "qa_f1",
         "max_gen_toks": 50,
     },
-    
+
     # Summarization
     "gov_report": {
         "dataset_name": "gov_report",
