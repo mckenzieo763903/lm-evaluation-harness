@@ -6,12 +6,12 @@ from typing import List, Dict, Any, Tuple, Optional
 
 def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
     """Process the SPaRC dataset documents."""
-    
+
     def _process_doc(doc):
         # Extract and clean the grid visualization if present
         if 'text_visualization' in doc:
             doc['visualization'] = doc['text_visualization']
-        
+
         # Ensure solutions is a list
         if 'solutions' in doc and isinstance(doc['solutions'], str):
             try:
@@ -253,6 +253,7 @@ def extract_solution_path(
         for x, y in coords:
             point = {"x": int(x), "y": int(y)}
             path.append(point)
+
 
             # Stop extracting if we've reached the end point
             if (
