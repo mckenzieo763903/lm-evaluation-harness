@@ -1,17 +1,18 @@
 import re
 import json
+
 import datasets
-from typing import List, Dict, Any, Tuple, Optional
+from typing import Any, Dict, List
 
 
 def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
     """Process the SPaRC dataset documents."""
-    
+
     def _process_doc(doc):
         # Extract and clean the grid visualization if present
         if 'text_visualization' in doc:
             doc['visualization'] = doc['text_visualization']
-        
+
         # Ensure solutions is a list
         if 'solutions' in doc and isinstance(doc['solutions'], str):
             try:
@@ -20,14 +21,14 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
                 doc['solutions'] = [doc['solutions']]
         elif 'solutions' in doc and not isinstance(doc['solutions'], list):
             doc['solutions'] = [doc['solutions']]
-        
+
         # Convert polyshapes if it's a string
         if 'polyshapes' in doc and isinstance(doc['polyshapes'], str):
             try:
                 doc['polyshapes'] = json.loads(doc['polyshapes'])
             except json.JSONDecodeError:
                 doc['polyshapes'] = {}
-        
+
         # Extract grid size
         if 'grid_size' in doc:
             if isinstance(doc['grid_size'], dict):
@@ -36,26 +37,18 @@ def process_docs(dataset: datasets.Dataset) -> datasets.Dataset:
             else:
                 doc['grid_height'] = 10
                 doc['grid_width'] = 10
-        
+
         return doc
-    
+
     return dataset.map(_process_doc)
 
 
 def doc_to_text(doc: Dict[str, Any]) -> str:
     """Convert a document to input text for the model using comprehensive prompt format."""
-    
+
     grid_size = doc.get("grid_size", {"width": 0, "height": 0})
     puzzle_array = doc.get("puzzle_array", [])
     grid_str = "\n".join(map(str, puzzle_array))
-    start_pos = None
-    end_pos = None
-    for y, row in enumerate(puzzle_array):
-        for x, cell in enumerate(row):
-            if cell == "S":
-                start_pos = f"({x}, {y})"
-            elif cell == "E":
-                end_pos = f"({x}, {y})"
 
     polyshapes_str = ""
     if "polyshapes" in doc and doc["polyshapes"]:
@@ -68,7 +61,7 @@ def doc_to_text(doc: Dict[str, Any]) -> str:
                 polyshapes_json = {}
         else:
             polyshapes_json = polyshapes_data
-            
+
         for shape_id, shape_def in polyshapes_json.items():
             polyshapes_str += f"Shape {shape_id}:\n"
             if isinstance(shape_def, list):
@@ -76,7 +69,7 @@ def doc_to_text(doc: Dict[str, Any]) -> str:
             else:
                 polyshapes_str += str(shape_def)
             polyshapes_str += "\n\n"
-    
+
     return f"""
 ## Objective
 You are a specialized AI proficient in spatial reasoning and solving puzzles from the game 'The Witness'. Your goal is to find a valid path (a continuous line) from the specified Start Node to the End Node on the provided grid, adhering to all puzzle rules.
@@ -203,7 +196,7 @@ def doc_to_target(doc: Dict[str, Any]) -> str:
         "polyshapes": doc.get('polyshapes', {}),
         "difficulty": doc.get('difficulty_level', "unknown")
     }
-    
+
     # Return as JSON string so metrics can parse it
     return json.dumps(target_data)
 
