@@ -68,7 +68,7 @@ def doc_to_text(doc: Dict[str, Any]) -> str:
                 polyshapes_json = {}
         else:
             polyshapes_json = polyshapes_data
-            
+
         for shape_id, shape_def in polyshapes_json.items():
             polyshapes_str += f"Shape {shape_id}:\n"
             if isinstance(shape_def, list):
@@ -203,7 +203,7 @@ def doc_to_target(doc: Dict[str, Any]) -> str:
         "polyshapes": doc.get('polyshapes', {}),
         "difficulty": doc.get('difficulty_level', "unknown")
     }
-    
+
     # Return as JSON string so metrics can parse it
     return json.dumps(target_data)
 
